@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>MorphHOI</title>
+<meta name="description" content="MorphHOI: one decentralized policy lets teams of humanoids with different bodies carry objects together.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+
+:root {
+  --bg: #ffffff;
+  --band: #f5f5f7;
+  --ink: #1d1d1f;
+  --sub: #6e6e73;
+  --faint: #a1a1a6;
+  --rule: #e3e3e8;
+  --acc1: #ff7a45;
+  --acc2: #e5397a;
+  --font-display: -apple-system, "SF Pro Display", BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-text: -apple-system, "SF Pro Text", BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --col: 1080px;
+  --wide: 1320px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-text); font-size: 17px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; letter-spacing: -0.005em;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30;
+  background: rgba(255, 255, 255, 0.82); }
+a { color: inherit; }
+.grad { background: linear-gradient(90deg, var(--acc1), var(--acc2)); -webkit-background-clip: text; background-clip: text;
+  color: transparent; }
+.wrap { max-width: var(--col); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wide { max-width: var(--wide); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+
+nav.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(180%) blur(18px); -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+nav.top .wrap { display: flex; align-items: center; gap: 28px; height: 52px; }
+nav.top .brand { font-family: var(--font-display); font-weight: 600; font-size: 19px; letter-spacing: -0.02em;
+  text-decoration: none; margin-right: auto; }
+nav.top .links { display: flex; gap: 24px; font-size: 13px; color: var(--sub); }
+nav.top .links a { text-decoration: none; }
+nav.top .links a:hover { color: var(--ink); }
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 980px; padding: 6px 14px; font-size: 13px;
+  font-weight: 500; text-decoration: none; border: 0; cursor: pointer; font-family: var(--font-text); }
+.pill.dark { background: var(--ink); color: #fff; }
+.pill.line { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
+.pill:focus-visible, .seg button:focus-visible, .copy:focus-visible { outline: 2px solid var(--acc2); outline-offset: 2px; }
+@media (max-width: 760px) { nav.top .links { display: none; } }
+
+
+.hero { text-align: center; padding-block: 88px 28px; }
+.eyebrow { font-size: 14px; font-weight: 500; color: var(--sub); letter-spacing: 0.02em; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(48px, 9vw, 116px); line-height: 1.0;
+  letter-spacing: -0.045em; margin: 14px 0 0; text-wrap: balance; }
+.lede { max-width: 640px; margin: 26px auto 0; font-size: clamp(18px, 2.1vw, 22px); line-height: 1.45; color: var(--sub);
+  text-wrap: pretty; }
+.cta { display: flex; gap: 12px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+.cta .pill { padding: 11px 22px; font-size: 16px; }
+.hero-media { margin-top: 36px; }
+video, .media img { display: block; width: 100%; height: auto; max-width: 100%; background: var(--bg); }
+.cap { font-size: 13px; color: var(--faint); margin-top: 10px; }
+.cap b { color: var(--sub); font-weight: 500; }
+.hero-media .cap { text-align: center; }
+
+
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-block: 72px 24px; }
+.fact .n { font-family: var(--font-display); font-weight: 600; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -0.04em;
+  line-height: 1; font-variant-numeric: tabular-nums; }
+.fact .t { color: var(--sub); margin-top: 10px; font-size: 16px; max-width: 30ch; }
+@media (max-width: 760px) { .facts { grid-template-columns: 1fr; gap: 36px; } }
+
+
+section.s { padding-block: 112px 0; }
+.head { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: end;
+  margin-bottom: 40px; }
+.head h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(36px, 5.2vw, 64px); line-height: 1.04;
+  letter-spacing: -0.035em; margin: 0; text-wrap: balance; }
+.head p { margin: 0; color: var(--sub); font-size: 18px; text-wrap: pretty; }
+.head .k { display: block; font-size: 14px; font-weight: 500; color: var(--faint); margin-bottom: 14px; letter-spacing: 0.01em; }
+@media (max-width: 760px) { .head { grid-template-columns: 1fr; gap: 16px; } section.s { padding-block: 80px 0; } }
+
+.grid2, .grid3 { display: grid; gap: 8px; }
+.grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid2.robots .tile:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 4px); }
+.grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.grid2.teams, .grid2.unseen { row-gap: 36px; }
+.grid2.teams .lab { margin-top: 0; }
+
+.grid2.unseen .name { margin-top: 0; }
+@media (max-width: 760px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.tile { min-width: 0; }
+.tile .lab { display: flex; align-items: baseline; justify-content: center; gap: 8px; margin-top: 4px; }
+.tile .lab .big { font-family: var(--font-display); font-weight: 700; font-size: 44px; letter-spacing: -0.03em; line-height: 1; }
+.tile .lab .sm { color: var(--faint); font-size: 14px; }
+.tile .name { text-align: center; font-weight: 500; margin-top: 6px; }
+.tile .name + .cap { text-align: center; margin-top: 2px; }
+
+.bodyfacts { display: flex; justify-content: center; gap: clamp(20px, 6vw, 72px); flex-wrap: wrap; margin-top: 18px;
+  color: var(--sub); font-size: 15px; }
+.bodyfacts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+
+.band { background: var(--band); margin-top: 112px; padding-block: 104px 96px; }
+.band section.s { padding-block: 0; }
+.seg { display: inline-flex; background: #e8e8ed; border-radius: 980px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; border-radius: 980px; padding: 7px 16px; font: 500 14px var(--font-text);
+  color: var(--sub); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.cmp-labels, .cmp-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.cmp-labels div { font-family: var(--font-display); font-weight: 600; font-size: clamp(17px, 2.2vw, 24px);
+  letter-spacing: -0.02em; }
+.cmp-notes div { font-size: 14px; color: var(--sub); padding: 0 8px; }
+.cmp-notes div.ours { color: var(--ink); font-weight: 500; }
+.cmp-media { margin: 14px 0; background: var(--bg); border-radius: 18px; overflow: hidden; }
+.cmp-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 22px; }
+.fine { font-size: 13px; color: var(--faint); margin-top: 16px; }
+
+
+
+.method-fig { background: var(--bg); }
+.pillars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 48px; }
+.pillars h4 { font-family: var(--font-display); font-weight: 600; font-size: 21px; letter-spacing: -0.02em; margin: 0 0 8px; }
+.pillars p { margin: 0; color: var(--sub); font-size: 16px; }
+@media (max-width: 760px) { .pillars { grid-template-columns: 1fr; gap: 28px; } }
+
+
+.film video { border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06); }
+pre.bib { background: var(--band); border-radius: 14px; padding: 22px 24px; font: 13px/1.6 var(--mono); overflow-x: auto;
+  margin: 0; color: var(--ink); }
+.bibwrap { position: relative; }
+.copy { position: absolute; top: 12px; right: 12px; }
+footer { padding-block: 96px 64px; color: var(--faint); font-size: 13px; text-align: center; }
+</style>
+
+</head>
+<body>
+<nav class="top" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">MorphHOI</a>
+    <div class="links">
+      <a href="#bodies">Bodies</a><a href="#teams">Teams</a><a href="#unseen">Generalization</a><a href="#skills">Skills</a><a href="#robots">Robots</a>
+      <a href="#compare">Comparison</a>
+    </div>
+    <a class="pill dark" href="#film">Watch the film</a>
+  </div>
+</nav>
+
+<header class="hero wrap" id="top">
+  <div class="eyebrow">Cooperative human-object interaction with heterogeneous teams</div>
+  <h1>One policy.<br><span class="grad">Many bodies.</span></h1>
+  <p class="lede">MorphHOI is a single decentralized policy that lets humanoids of different heights, limbs and joints
+    carry objects together.</p>
+  <div class="cta">
+    <a class="pill dark" href="#film" data-play-film>Watch the film</a>
+    <a class="pill line" href="#cite">Paper (under review)</a>
+  </div>
+</header>
+<div class="wide hero-media">
+  <div class="media"><video src="media/clips/hero.mp4" poster="media/posters/hero.jpg" autoplay muted loop playsinline
+    aria-label="Different teams of different humanoid bodies carry tables of different shapes and a long box among furniture, one pair down a flight of stairs"></video></div>
+  <div class="cap"><b>Different teams of different bodies and sizes, with tables and box.</b></div>
+</div>
+
+<div class="wrap">
+  <div class="facts">
+    <div class="fact"><div class="n">Any <span class="grad">team.</span></div>
+      <div class="t">Trained in small groups, it carries with teams far larger than any it has seen.</div></div>
+    <div class="fact"><div class="n">Any <span class="grad">body.</span></div>
+      <div class="t">Short or tall, light or heavy, few joints or many: one policy drives them all.</div></div>
+    <div class="fact"><div class="n">New <span class="grad">skills.</span></div>
+      <div class="t">Boxes, paths and stairs down plug in with a quick fine-tune, and multiple skills live side by side in one policy.</div></div>
+  </div>
+</div>
+
+<section class="s" id="bodies">
+  <div class="wrap head">
+    <h2>Every body is <span class="grad">different.</span></h2>
+    <p>Heights, masses, limb lengths and joint layouts all vary. Each agent is told what its own body and its
+      teammates' bodies look like, so the same network adapts its grip, gait and timing to the team it is in.</p>
+  </div>
+  <div class="wide">
+    <div class="media"><video src="media/clips/bodies.mp4" poster="media/posters/bodies.jpg" autoplay muted loop playsinline aria-label="Different humanoid bodies walk to a round table, lift it and carry it to a target"></video></div>
+    <div class="cap" style="text-align:center"><b>Different bodies, transporting together.</b> Simulation, real time.</div>
+  </div>
+  <div class="wrap bodyfacts">
+    <span><b>1.64-1.84 m</b> tall</span><span><b>46-80 kg</b></span><span><b>18-28</b> degrees of freedom</span><span><b>16-1000 Nm/rad</b> PD gains</span>
+  </div>
+</section>
+
+<section class="s" id="teams">
+  <div class="wrap head">
+    <h2>Any team <span class="grad">size.</span></h2>
+    <p>Every agent runs the same decentralized policy and attends to its teammates, so a team grows without retraining.
+      Trained only with two to four agents, it generalizes to teams of eight to sixteen it never trained with.</p>
+  </div>
+  <div class="wide grid2 teams">
+    <div class="tile"><video src="media/clips/team-4.mp4" poster="media/posters/team-4.jpg" autoplay muted loop playsinline aria-label="Four agents carry a round table"></video>
+      <div class="lab"><span class="big">4</span><span class="sm">agents</span></div></div>
+    <div class="tile"><video src="media/clips/team-8.mp4" poster="media/posters/team-8.jpg" autoplay muted loop playsinline aria-label="Eight agents carry a round table"></video>
+      <div class="lab"><span class="big">8</span><span class="sm">agents</span></div></div>
+    <div class="tile"><video src="media/clips/team-12.mp4" poster="media/posters/team-12.jpg" autoplay muted loop playsinline aria-label="Twelve agents carry a large round table"></video>
+      <div class="lab"><span class="big">12</span><span class="sm">agents</span></div></div>
+    <div class="tile"><video src="media/clips/team-16.mp4" poster="media/posters/team-16.jpg" autoplay muted loop playsinline aria-label="Sixteen agents carry a large round table"></video>
+      <div class="lab"><span class="big">16</span><span class="sm">agents</span></div></div>
+  </div>
+</section>
+
+<section class="s" id="unseen">
+  <div class="wrap head">
+    <h2>Bodies and tables it never <span class="grad">trained on.</span></h2>
+    <p>Without any fine-tuning, bodies excluded from training cooperate with the team, and table shapes outside
+      the training distribution are lifted, carried and placed at the target.</p>
+  </div>
+  <div class="wide grid2 unseen">
+    <div class="tile"><video src="media/clips/new-bodies-square.mp4" poster="media/posters/new-bodies-square.jpg" autoplay muted loop playsinline aria-label="Digital humans left out of training approach a square table from its four sides and carry it"></video>
+      <div class="name">New bodies, square table</div></div>
+    <div class="tile"><video src="media/clips/new-bodies-large.mp4" poster="media/posters/new-bodies-large.jpg" autoplay muted loop playsinline aria-label="A large team of digital humans left out of training carry a large round table"></video>
+      <div class="name">New bodies, large team</div></div>
+    <div class="tile"><video src="media/clips/table-ellipse.mp4" poster="media/posters/table-ellipse.jpg" autoplay muted loop playsinline aria-label="A heavy and a slim digital human carry an elliptical table"></video>
+      <div class="name">Ellipse</div></div>
+    <div class="tile"><video src="media/clips/table-h.mp4" poster="media/posters/table-h.jpg" autoplay muted loop playsinline aria-label="Four agents carry an H-shaped table"></video>
+      <div class="name">H-shape</div></div>
+  </div>
+</section>
+
+<section class="s" id="skills">
+  <div class="wrap head">
+    <h2>New skills.<br><span class="grad">Just plug them in.</span></h2>
+    <p>Each skill is a token with a small LoRA on the frozen policy, switched on per agent. Adding one leaves the others
+      untouched: teams carry boxes, follow paths, go down stairs and turn a table through a gap.</p>
+  </div>
+  <div class="wide">
+    <div class="media"><video src="media/clips/skill-box.mp4" poster="media/posters/skill-box.jpg" autoplay muted loop playsinline aria-label="Four agents walk to an H-shaped box, lift it and carry it"></video></div>
+    <div class="cap" style="text-align:center"><b>Carry a box.</b> Added skill.</div>
+    <div class="media" style="margin-top:40px"><video src="media/clips/skill-path.mp4" poster="media/posters/skill-path.jpg" autoplay muted loop playsinline aria-label="Four agents carry a table along a dotted path of waypoints"></video></div>
+    <div class="cap" style="text-align:center"><b>Follow a path.</b> Added skill.</div>
+    <div class="media" style="margin-top:40px"><video src="media/clips/skill-stairs.mp4" poster="media/posters/skill-stairs.jpg" autoplay muted loop playsinline aria-label="A team carries a round table down a flight of stairs"></video></div>
+    <div class="cap" style="text-align:center"><b>Down the stairs.</b> Added skill.</div>
+    <div class="media" style="margin-top:40px"><video src="media/clips/skill-gap.mp4" poster="media/posters/skill-gap.jpg" autoplay muted loop playsinline aria-label="Two agents turn a rectangular table lengthwise along a planned path and carry it through a gap in a wall"></video></div>
+    <div class="cap" style="text-align:center"><b>Turn it, fit it through.</b> Path and pose skill: the planned table poses turn it lengthwise before the gap.</div>
+  </div>
+</section>
+
+<section class="s" id="robust">
+  <div class="wrap head">
+    <h2>Teammates come and <span class="grad">go.</span></h2>
+    <p>The team is read again at every step, so an agent can join a carry already under way, or walk away from one,
+      and the others re-space around the table and carry on.</p>
+  </div>
+  <div class="wide grid2">
+    <div class="tile"><video src="media/clips/join.mp4" poster="media/posters/join.jpg" autoplay muted loop playsinline aria-label="Three agents carry a round table; a fourth walks in and joins the carry"></video>
+      <div class="name">Someone joins</div><div class="cap">Three carry, a fourth walks in.</div></div>
+    <div class="tile"><video src="media/clips/leave.mp4" poster="media/posters/leave.jpg" autoplay muted loop playsinline aria-label="Five agents carry a round table; one lets go and walks away while four carry on"></video>
+      <div class="name">Someone leaves</div><div class="cap">Five carry, one walks away.</div></div>
+  </div>
+</section>
+
+<section class="s" id="robots">
+  <div class="wrap head">
+    <h2>Transfer to <span class="grad">robots.</span></h2>
+    <p>The same policy and skills drive humanoid robots, each with its own joints, limits and mass: eight around a
+      table, two with a long box, two down the stairs, four through a gap.</p>
+  </div>
+  <div class="wide grid2 robots">
+    <div class="tile"><video src="media/clips/robots-table.mp4" poster="media/posters/robots-table.jpg" autoplay muted loop playsinline aria-label="Eight humanoid robots carry a round table together"></video>
+      <div class="lab"><span class="big">8</span><span class="sm">robots, a round table</span></div></div>
+    <div class="tile"><video src="media/clips/robots-box.mp4" poster="media/posters/robots-box.jpg" autoplay muted loop playsinline aria-label="Two robots carry a long box"></video>
+      <div class="lab"><span class="big">2</span><span class="sm">robots, a long box</span></div></div>
+    <div class="tile"><video src="media/clips/robots-stairs.mp4" poster="media/posters/robots-stairs.jpg" autoplay muted loop playsinline aria-label="Two robots carry a rectangular table down a flight of stairs"></video>
+      <div class="lab"><span class="big">2</span><span class="sm">robots, down the stairs</span></div></div>
+    <div class="tile"><video src="media/clips/robots-gap.mp4" poster="media/posters/robots-gap.jpg" autoplay muted loop playsinline aria-label="Four robots, one on each side, turn a rectangular table and carry it through a gap in a wall"></video>
+      <div class="lab"><span class="big">4</span><span class="sm">robots, through a gap</span></div></div>
+  </div>
+</section>
+
+<div class="band" id="compare">
+  <section class="s">
+    <div class="wrap head">
+      <h2>Compared with <span class="grad">the baselines.</span></h2>
+      <p>Both baselines are retrained on our bodies within their own frameworks. Each scene gives all three methods
+        the same team, the same starting positions and the same target.</p>
+    </div>
+    <div class="wide">
+      <div class="cmp-top">
+        <div class="seg" role="group" aria-label="Scene">
+          <button type="button" id="cmp-u" aria-pressed="true" data-cmp="compare-bodies">New bodies</button>
+          <button type="button" id="cmp-8" aria-pressed="false" data-cmp="compare-team">Trained bodies</button>
+        </div>
+      </div>
+      <div class="cmp-labels"><div>CooHOI*</div><div>TeamHOI*</div><div><span class="grad">MorphHOI</span></div></div>
+      <div class="cmp-media"><video id="cmp-video" src="media/clips/compare-bodies.mp4" poster="media/posters/compare-bodies.jpg" autoplay muted loop playsinline aria-label="Three methods side by side carrying the same table with the same team"></video></div>
+      <div class="cmp-notes" id="cmp-notes"></div>
+
+      <p class="fine">*Retrained on our bodies, with as many training epochs as MorphHOI.</p>
+    </div>
+  </section>
+</div>
+
+<section class="s film" id="film">
+  <div class="wrap head">
+    <h2>The <span class="grad">film.</span></h2>
+    <p>About four minutes, all in real time: the bodies, the teams, new bodies and tables, the added skills, teammates joining and leaving, and robots.</p>
+  </div>
+  <div class="wide"><video id="film-video" src="media/film.mp4" poster="media/posters/film.jpg" controls playsinline preload="metadata" aria-label="MorphHOI film"></video></div>
+</section>
+
+<section class="s" id="cite">
+  <div class="wrap head">
+    <h2>Paper</h2>
+    <p>One Policy, Many Bodies: Cooperative Human-Object Interaction with Heterogeneous Teams. Under
+      double-blind review; authors and links follow after the decision.</p>
+  </div>
+  <div class="wrap bibwrap">
+    <pre class="bib" id="bib">@article{morphhoi2026,
+  title   = {One Policy, Many Bodies: Cooperative Human-Object
+             Interaction with Heterogeneous Teams},
+  author  = {Anonymous},
+  journal = {Under review},
+  year    = {2026}
+}</pre>
+    <button type="button" class="pill line copy" id="copy-bib">Copy</button>
+  </div>
+</section>
+
+<footer class="wrap">MorphHOI &middot; all scenes are physics simulation with digital humans. Hand contacts are smoothed
+  over a fraction of a second for display.</footer>
+
+<script>
+(function () {
+  var NOTES = {
+    "compare-team": [["Winds and never reaches the target", false],
+           ["Gets there along a wide, slow arc", false],
+           ["Straight to the target, all eight holding", true]],
+    "compare-bodies": [["Agents fall and the table tips over", false],
+           ["Puts it down with one grip slipping", false],
+           ["Puts it down with every hand on the table", true]]
+  };
+  var vid = document.getElementById("cmp-video"), notes = document.getElementById("cmp-notes");
+  function setCmp(k) {
+    notes.innerHTML = "";
+    NOTES[k].forEach(function (n) {
+      var d = document.createElement("div"); d.textContent = n[0]; if (n[1]) d.className = "ours"; notes.appendChild(d);
+    });
+    document.querySelectorAll("[data-cmp]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.cmp === k); });
+    if (vid.getAttribute("src") !== "media/clips/" + k + ".mp4") {
+      vid.setAttribute("poster", "media/posters/" + k + ".jpg");
+      vid.setAttribute("src", "media/clips/" + k + ".mp4");
+      var p = vid.play(); if (p && p.catch) p.catch(function () {});
+    }
+  }
+  document.querySelectorAll("[data-cmp]").forEach(function (b) { b.addEventListener("click", function () { setCmp(b.dataset.cmp); }); });
+  setCmp("compare-bodies");
+  document.querySelectorAll("[data-play-film]").forEach(function (a) {
+    a.addEventListener("click", function () {
+      var f = document.getElementById("film-video");
+      setTimeout(function () { var p = f.play(); if (p && p.catch) p.catch(function () {}); }, 450);
+    });
+  });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else { v.pause(); }
+      });
+    }, { rootMargin: "200px" });
+    document.querySelectorAll("video[loop]").forEach(function (v) { io.observe(v); });
+  }
+  document.getElementById("copy-bib").addEventListener("click", function () {
+    var b = this, txt = document.getElementById("bib").textContent;
+    function done() { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1600); }
+    function fallback() { var r = document.createRange(); r.selectNodeContents(document.getElementById("bib"));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Selected"; }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
+  });
+})();
+</script>
+
+</body>
+</html>
