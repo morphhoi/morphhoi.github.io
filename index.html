@@ -58,7 +58,7 @@ nav.top .links a:hover { color: var(--ink); }
   font-weight: 500; text-decoration: none; border: 0; cursor: pointer; font-family: var(--font-text); }
 .pill.dark { background: var(--ink); color: #fff; }
 .pill.line { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
-.pill:focus-visible { outline: 2px solid var(--acc2); outline-offset: 2px; }
+.pill:focus-visible, .seg button:focus-visible { outline: 2px solid var(--acc2); outline-offset: 2px; }
 @media (max-width: 760px) { nav.top .links { display: none; } }
 
 
@@ -117,6 +117,21 @@ section.s { padding-block: 112px 0; }
 .bodyfacts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 
+.band { background: var(--band); margin-top: 112px; padding-block: 104px 96px; }
+.band section.s { padding-block: 0; }
+.seg { display: inline-flex; background: #e8e8ed; border-radius: 980px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; border-radius: 980px; padding: 7px 16px; font: 500 14px var(--font-text);
+  color: var(--sub); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.cmp-labels, .cmp-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.cmp-labels div { font-family: var(--font-display); font-weight: 600; font-size: clamp(17px, 2.2vw, 24px);
+  letter-spacing: -0.02em; }
+.cmp-notes div { font-size: 14px; color: var(--sub); padding: 0 8px; }
+.cmp-notes div.ours { color: var(--ink); font-weight: 500; }
+.cmp-media { margin: 14px 0; background: var(--bg); border-radius: 18px; overflow: hidden; }
+.cmp-top { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 22px; }
+.fine { font-size: 13px; color: var(--faint); margin-top: 16px; }
 
 
 
@@ -161,6 +176,7 @@ footer { padding-block: 96px 64px; color: var(--faint); font-size: 13px; text-al
     <a class="brand" href="#top">MorphHOI</a>
     <div class="links">
       <a href="#bodies">Bodies</a><a href="#teams">Teams</a><a href="#unseen">Generalization</a><a href="#skills">Skills</a><a href="#robots">Robots</a><a href="#data">Data</a>
+      <a href="#compare">Comparison</a>
     </div>
     <a class="pill dark" href="#film">Watch the film</a>
   </div>
@@ -314,6 +330,29 @@ footer { padding-block: 96px 64px; color: var(--faint); font-size: 13px; text-al
   <p class="wrap cap" style="text-align:center">Skeletons, tabletop outlines and footprints coloured by time; a footprint where the simulator reports a loaded foot.</p>
 </section>
 
+<div class="band" id="compare">
+  <section class="s">
+    <div class="wrap head">
+      <h2>Compared with <span class="grad">the baselines.</span></h2>
+      <p>Both baselines are retrained on our bodies within their own frameworks. Each scene gives all three methods
+        the same team, the same starting positions and the same target.</p>
+    </div>
+    <div class="wide">
+      <div class="cmp-top">
+        <div class="seg" role="group" aria-label="Scene">
+          <button type="button" id="cmp-n" aria-pressed="true" data-cmp="compare-bodies-topo">Unseen topology</button>
+          <button type="button" id="cmp-u" aria-pressed="false" data-cmp="compare-bodies-PD-topo">Unseen PD gains + topology</button>
+        </div>
+      </div>
+      <div class="cmp-labels"><div>CooHOI*</div><div>TeamHOI*</div><div><span class="grad">MorphHOI</span></div></div>
+      <div class="cmp-media"><video id="cmp-video" src="media/clips/compare-bodies-topo.mp4" poster="media/posters/compare-bodies-topo.jpg" autoplay muted loop playsinline aria-label="Three methods side by side carrying the same table with the same team"></video></div>
+      <div class="cmp-notes" id="cmp-notes"></div>
+
+      <p class="fine">*Retrained on our bodies, with as many training epochs as MorphHOI.</p>
+    </div>
+  </section>
+</div>
+
 <section class="s film" id="film">
   <div class="wrap head">
     <h2>The <span class="grad">film.</span></h2>
@@ -349,6 +388,29 @@ footer { padding-block: 96px 64px; color: var(--faint); font-size: 13px; text-al
 
 <script>
 (function () {
+  var NOTES = {
+    "compare-bodies-topo": [["Holds it up and never puts it down", false],
+           ["Agents fall and the table tips over", false],
+           ["Puts it down with every hand on the table", true]],
+    "compare-bodies-PD-topo": [["Agents fall and the table tips over", false],
+           ["Puts it down with one grip slipping", false],
+           ["Puts it down with every hand on the table", true]]
+  };
+  var vid = document.getElementById("cmp-video"), notes = document.getElementById("cmp-notes");
+  function setCmp(k) {
+    notes.innerHTML = "";
+    NOTES[k].forEach(function (n) {
+      var d = document.createElement("div"); d.textContent = n[0]; if (n[1]) d.className = "ours"; notes.appendChild(d);
+    });
+    document.querySelectorAll("[data-cmp]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.cmp === k); });
+    if (vid.getAttribute("src") !== "media/clips/" + k + ".mp4") {
+      vid.setAttribute("poster", "media/posters/" + k + ".jpg");
+      vid.setAttribute("src", "media/clips/" + k + ".mp4");
+      var p = vid.play(); if (p && p.catch) p.catch(function () {});
+    }
+  }
+  document.querySelectorAll("[data-cmp]").forEach(function (b) { b.addEventListener("click", function () { setCmp(b.dataset.cmp); }); });
+  setCmp("compare-bodies-topo");
   document.querySelectorAll("[data-play-film]").forEach(function (a) {
     a.addEventListener("click", function () {
       var f = document.getElementById("film-video");
